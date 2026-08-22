@@ -238,116 +238,61 @@ const tracks = [
 
 ];
 
+<script>
+const tracks = [
+    {
+        name: "TEST TRACK",
+        video: "video1.mp4"
+    }
+];
+
 let currentTrack = 0;
 
-const audio = new Audio();
-
 const video = document.getElementById("visual");
-
 const playButton = document.getElementById("playButton");
-
 const progressBar = document.getElementById("progressBar");
-
 const trackName = document.getElementById("trackName");
-
 const trackNumber = document.getElementById("trackNumber");
 
-
 function loadTrack(index) {
-
     currentTrack = index;
 
     const track = tracks[index];
 
-    audio.src = track.audio;
-
     video.src = track.video;
+    video.load();
 
     trackName.textContent = track.name;
-
     trackNumber.textContent =
         String(index + 1).padStart(2, "0");
-
-    document.querySelectorAll(".tracks button")
-        .forEach((button, i) => {
-
-            button.classList.toggle(
-                "active",
-                i === index
-            );
-
-        });
-
-    audio.load();
-
 }
-
 
 function togglePlay() {
-
-    if (audio.paused) {
-
-        audio.play();
-
+    if (video.paused) {
         video.play();
-
         playButton.textContent = "PAUSE";
-
     } else {
-
-        audio.pause();
-
         video.pause();
-
         playButton.textContent = "PLAY";
-
     }
-
 }
 
-
-audio.addEventListener("timeupdate", () => {
-
-    if (!audio.duration) return;
+video.addEventListener("timeupdate", () => {
+    if (!video.duration) return;
 
     const percent =
-        (audio.currentTime / audio.duration) * 100;
+        (video.currentTime / video.duration) * 100;
 
-    progressBar.style.width =
-        percent + "%";
-
+    progressBar.style.width = percent + "%";
 });
 
-
-audio.addEventListener("ended", () => {
-
-    const next =
-        (currentTrack + 1) % tracks.length;
-
+video.addEventListener("ended", () => {
+    const next = (currentTrack + 1) % tracks.length;
     loadTrack(next);
-
-    audio.play();
-
     video.play();
-
 });
-
-
-function changeTrack(index) {
-
-    loadTrack(index);
-
-    audio.play();
-
-    video.play();
-
-    playButton.textContent = "PAUSE";
-
-}
-
 
 loadTrack(0);
-
 </script>
 
 </body>
