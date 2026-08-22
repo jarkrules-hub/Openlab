@@ -11,15 +11,21 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     margin: 0;
-    background: #050505;
-    color: white;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
 }
 
 .container {
@@ -28,59 +34,96 @@ body {
     text-align: center;
 }
 
-.title {
-    font-size: 14px;
+/* Название */
+.logo {
+    font-size: 13px;
     letter-spacing: 8px;
-    margin-bottom: 35px;
     opacity: 0.7;
+    margin-bottom: 25px;
 }
 
-.video-box {
+/* Видео */
+.video-container {
     width: 100%;
-    max-height: 65vh;
     background: #000;
-    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 video {
     width: 100%;
-    height: auto;
-    max-height: 65vh;
-    display: block;
+    max-height: 60vh;
     object-fit: contain;
+    display: block;
 }
 
+/* Информация о треке */
 .track-number {
-    margin-top: 30px;
+    margin-top: 25px;
     font-size: 12px;
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     opacity: 0.5;
 }
 
-.track-name {
+.track-title {
     margin-top: 10px;
     font-size: 22px;
     letter-spacing: 3px;
 }
 
-button {
-    margin-top: 30px;
-    background: none;
+/* PLAY */
+.play-button {
+    margin-top: 25px;
+    padding: 12px 40px;
+    background: transparent;
     border: 1px solid #555;
     color: white;
-    padding: 12px 35px;
-    cursor: pointer;
-    letter-spacing: 3px;
     font-size: 12px;
+    letter-spacing: 4px;
+    cursor: pointer;
 }
 
-button:hover {
+.play-button:hover {
     background: white;
     color: black;
 }
 
-audio {
-    display: none;
+/* Выбор треков */
+.tracks {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.track-button {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.track-button.active {
+    color: white;
+}
+
+/* На телефоне */
+@media (max-width: 600px) {
+
+    .track-title {
+        font-size: 17px;
+    }
+
+    video {
+        max-height: 45vh;
+    }
+
+    .tracks {
+        gap: 14px;
+    }
 }
 </style>
 </head>
@@ -89,23 +132,41 @@ audio {
 
 <div class="container">
 
-    <div class="title">OPENLAB</div>
+    <div class="logo">
+        OPENLAB
+    </div>
 
-    <div class="video-box">
-        <video id="visual" loop playsinline>
-            <source src="./video1.mp4" type="video/mp4">
+    <div class="video-container">
+        <video id="visual" playsinline>
+            <source src="video1.mp4" type="video/mp4">
         </video>
     </div>
 
-    <div class="track-number">01</div>
+    <div class="track-number" id="trackNumber">
+        01
+    </div>
 
-    <div class="track-name">
+    <div class="track-title" id="trackTitle">
         ХОТЕЛ БЫТЬ КАК ВСЕ
     </div>
 
-    <audio id="music" src="./track1.mp3"></audio>
+    <button class="play-button" id="playButton">
+        PLAY
+    </button>
 
-    <button id="playButton">PLAY</button>
+    <audio id="music">
+        <source src="track1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="tracks">
+
+        <button class="track-button active">01</button>
+        <button class="track-button">02</button>
+        <button class="track-button">03</button>
+        <button class="track-button">04</button>
+        <button class="track-button">05</button>
+
+    </div>
 
 </div>
 
@@ -113,33 +174,47 @@ audio {
 
 const video = document.getElementById("visual");
 const music = document.getElementById("music");
-const button = document.getElementById("playButton");
+const playButton = document.getElementById("playButton");
 
-button.addEventListener("click", function() {
+let playing = false;
 
-    if (music.paused) {
+playButton.addEventListener("click", async () => {
 
-        music.play();
-        video.play();
+    if (!playing) {
 
-        button.textContent = "PAUSE";
+        try {
+
+            await music.play();
+            await video.play();
+
+            playing = true;
+            playButton.textContent = "PAUSE";
+
+        } catch (error) {
+
+            console.log("Ошибка воспроизведения:", error);
+
+        }
 
     } else {
 
         music.pause();
         video.pause();
 
-        button.textContent = "PLAY";
+        playing = false;
+        playButton.textContent = "PLAY";
     }
 
 });
 
-music.addEventListener("ended", function() {
+/* Когда музыка закончилась */
+music.addEventListener("ended", () => {
 
     video.pause();
     video.currentTime = 0;
 
-    button.textContent = "PLAY";
+    playing = false;
+    playButton.textContent = "PLAY";
 
 });
 
