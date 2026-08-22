@@ -141,6 +141,7 @@ video {
     .tracks {
         gap: 12px;
     }
+
 }
 
 </style>
@@ -161,12 +162,15 @@ video {
         <video
             id="video"
             playsinline
+            muted
             preload="auto"
         >
+
             <source
                 src="video1.mp4"
                 type="video/mp4"
             >
+
         </video>
 
     </div>
@@ -194,42 +198,34 @@ video {
         id="audio"
         preload="auto"
     >
+
         <source
             src="track1.mp3"
             type="audio/mpeg"
         >
+
     </audio>
 
 
     <div class="tracks">
 
-        <button
-            class="track-button active"
-        >
+        <button class="track-button active">
             01
         </button>
 
-        <button
-            class="track-button"
-        >
+        <button class="track-button">
             02
         </button>
 
-        <button
-            class="track-button"
-        >
+        <button class="track-button">
             03
         </button>
 
-        <button
-            class="track-button"
-        >
+        <button class="track-button">
             04
         </button>
 
-        <button
-            class="track-button"
-        >
+        <button class="track-button">
             05
         </button>
 
@@ -264,8 +260,7 @@ playButton.addEventListener("click", async function() {
             console.log(error);
 
             alert(
-                "Не удалось запустить видео. " +
-                "Проверь файл video1.mp4."
+                "Не удалось запустить воспроизведение."
             );
 
         }
