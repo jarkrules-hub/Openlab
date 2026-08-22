@@ -49,7 +49,7 @@ body {
 
 video {
     width: 100%;
-    max-height: 60vh;
+    max-height: 65vh;
     object-fit: contain;
     display: block;
 }
@@ -109,7 +109,7 @@ video {
     }
 
     video {
-        max-height: 45vh;
+        max-height: 50vh;
     }
 
     .track-title {
@@ -133,60 +133,93 @@ video {
         OPENLAB
     </div>
 
+
     <div class="video-box">
 
         <video
             id="video"
-            muted
             playsinline
-            loop
             preload="auto"
         >
-            <source src="video1.mp4" type="video/mp4">
+
+            <source
+                id="videoSource"
+                src="video1.mp4"
+                type="video/mp4"
+            >
+
         </video>
 
     </div>
 
-    <div class="track-number" id="trackNumber">
+
+    <div
+        class="track-number"
+        id="trackNumber">
+
         01
+
     </div>
 
-    <div class="track-title" id="trackTitle">
+
+    <div
+        class="track-title"
+        id="trackTitle">
+
         ХОТЕЛ БЫТЬ КАК ВСЕ
+
     </div>
+
 
     <button
         class="play-button"
         id="playButton">
+
         PLAY
+
     </button>
 
-    <audio
-        id="audio"
-        preload="auto">
-        <source src="track1.mp3" type="audio/mpeg">
-    </audio>
 
     <div class="tracks">
 
-        <button class="track-button active" data-track="1">
+        <button
+            class="track-button active"
+            data-track="1">
+
             01
+
         </button>
 
-        <button class="track-button" data-track="2">
+        <button
+            class="track-button"
+            data-track="2">
+
             02
+
         </button>
 
-        <button class="track-button" data-track="3">
+        <button
+            class="track-button"
+            data-track="3">
+
             03
+
         </button>
 
-        <button class="track-button" data-track="4">
+        <button
+            class="track-button"
+            data-track="4">
+
             04
+
         </button>
 
-        <button class="track-button" data-track="5">
+        <button
+            class="track-button"
+            data-track="5">
+
             05
+
         </button>
 
     </div>
@@ -196,170 +229,185 @@ video {
 
 <script>
 
-const video = document.getElementById("video");
-const audio = document.getElementById("audio");
-const playButton = document.getElementById("playButton");
+const video =
+document.getElementById("video");
 
-const trackNumber = document.getElementById("trackNumber");
-const trackTitle = document.getElementById("trackTitle");
+const videoSource =
+document.getElementById("videoSource");
 
-const trackButtons = document.querySelectorAll(".track-button");
+const playButton =
+document.getElementById("playButton");
+
+const trackNumber =
+document.getElementById("trackNumber");
+
+const trackTitle =
+document.getElementById("trackTitle");
+
+const buttons =
+document.querySelectorAll(".track-button");
 
 
 const tracks = {
 
     1: {
-        title: "ХОТЕЛ БЫТЬ КАК ВСЕ",
-        audio: "track1.mp3",
-        video: "video1.mp4"
+        video: "video1.mp4",
+        title: "ХОТЕЛ БЫТЬ КАК ВСЕ"
     },
 
     2: {
-        title: "БЛИЖЕ, ЧЕМ ВЕСЬ МИР",
-        audio: "track2.mp3",
-        video: "video2.mp4"
+        video: "video2.mp4",
+        title: "БЛИЖЕ, ЧЕМ ВЕСЬ МИР"
     },
 
     3: {
-        title: "ТАНЕЦ УЛИТКИ",
-        audio: "track3.mp3",
-        video: "video3.mp4"
+        video: "video3.mp4",
+        title: "ТАНЕЦ УЛИТКИ"
     },
 
     4: {
-        title: "ЧЁРНЫЕ И БЕЛЫЕ ПОЛОСЫ",
-        audio: "track4.mp3",
-        video: "video4.mp4"
+        video: "video4.mp4",
+        title: "ЧЁРНЫЕ И БЕЛЫЕ ПОЛОСЫ"
     },
 
     5: {
-        title: "НАВСЕГДА",
-        audio: "track5.mp3",
-        video: "video5.mp4"
+        video: "video5.mp4",
+        title: "НАВСЕГДА"
     }
 
 };
 
 
 let currentTrack = 1;
-let isPlaying = false;
+let playing = false;
 
 
 function loadTrack(number) {
 
     const track = tracks[number];
 
-    currentTrack = number;
+    if (!track) {
+        return;
+    }
 
-    audio.pause();
+
     video.pause();
 
-    isPlaying = false;
+    playing = false;
 
     playButton.textContent = "PLAY";
 
-    audio.src = track.audio;
-    video.src = track.video;
 
-    audio.load();
+    videoSource.src = track.video;
+
     video.load();
+
 
     trackNumber.textContent =
         String(number).padStart(2, "0");
 
-    trackTitle.textContent = track.title;
+    trackTitle.textContent =
+        track.title;
 
-    trackButtons.forEach(button => {
+
+    buttons.forEach(button => {
 
         button.classList.remove("active");
 
-        if (button.dataset.track == number) {
+        if (
+            Number(button.dataset.track) === number
+        ) {
+
             button.classList.add("active");
+
         }
 
     });
+
+
+    currentTrack = number;
 
 }
 
 
-playButton.addEventListener("click", async function() {
+/* PLAY / PAUSE */
 
-    if (!isPlaying) {
+playButton.addEventListener(
+    "click",
+    async function() {
 
-        try {
+        if (!playing) {
 
-            await audio.play();
-            await video.play();
+            try {
 
-            isPlaying = true;
+                await video.play();
 
-            playButton.textContent = "PAUSE";
+                playing = true;
+
+                playButton.textContent = "PAUSE";
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+                alert(
+                    "Не удалось запустить видео."
+                );
+
+            }
 
         }
 
-        catch (error) {
+        else {
 
-            console.log(error);
+            video.pause();
 
-            alert(
-                "Не удалось запустить воспроизведение."
-            );
+            playing = false;
+
+            playButton.textContent = "PLAY";
 
         }
 
     }
-
-    else {
-
-        audio.pause();
-        video.pause();
-
-        isPlaying = false;
-
-        playButton.textContent = "PLAY";
-
-    }
-
-});
+);
 
 
-trackButtons.forEach(button => {
+/* ПЕРЕКЛЮЧЕНИЕ ТРЕКОВ */
 
-    button.addEventListener("click", function() {
+buttons.forEach(button => {
 
-        const number =
-            Number(this.dataset.track);
+    button.addEventListener(
+        "click",
+        function() {
 
-        /*
-        Пока у нас реально готовы
-        только 01 и 02.
-        */
-
-        if (number === 1 || number === 2) {
+            const number =
+                Number(this.dataset.track);
 
             loadTrack(number);
 
         }
-
-    });
-
-});
-
-
-audio.addEventListener("ended", function() {
-
-    audio.pause();
-    video.pause();
-
-    audio.currentTime = 0;
-    video.currentTime = 0;
-
-    isPlaying = false;
-
-    playButton.textContent = "PLAY";
+    );
 
 });
 
+
+/* КОНЕЦ ВИДЕО */
+
+video.addEventListener(
+    "ended",
+    function() {
+
+        playing = false;
+
+        playButton.textContent = "PLAY";
+
+    }
+);
+
+
+/* ПЕРВЫЙ ТРЕК */
 
 loadTrack(1);
 
