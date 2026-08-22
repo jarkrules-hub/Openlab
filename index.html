@@ -35,8 +35,6 @@ body {
     text-align: center;
 }
 
-/* OPENLAB */
-
 .logo {
     font-size: 13px;
     letter-spacing: 8px;
@@ -44,13 +42,9 @@ body {
     margin-bottom: 30px;
 }
 
-/* VIDEO */
-
 .video-box {
     width: 100%;
     background: #000;
-    display: flex;
-    justify-content: center;
 }
 
 video {
@@ -59,8 +53,6 @@ video {
     object-fit: contain;
     display: block;
 }
-
-/* TRACK */
 
 .track-number {
     margin-top: 25px;
@@ -75,20 +67,14 @@ video {
     letter-spacing: 3px;
 }
 
-/* PLAY */
-
 .play-button {
     margin-top: 25px;
     padding: 12px 38px;
-
     background: transparent;
     border: 1px solid #555;
-
     color: #fff;
-
     font-size: 11px;
     letter-spacing: 4px;
-
     cursor: pointer;
 }
 
@@ -96,8 +82,6 @@ video {
     background: #fff;
     color: #000;
 }
-
-/* TRACK NUMBERS */
 
 .tracks {
     margin-top: 35px;
@@ -109,20 +93,14 @@ video {
 .track-button {
     background: transparent;
     border: none;
-
     color: #444;
-
     font-size: 11px;
-    letter-spacing: 2px;
-
     cursor: pointer;
 }
 
 .track-button.active {
     color: #fff;
 }
-
-/* MOBILE */
 
 @media (max-width: 600px) {
 
@@ -147,7 +125,6 @@ video {
 </style>
 </head>
 
-
 <body>
 
 <div class="container">
@@ -156,76 +133,59 @@ video {
         OPENLAB
     </div>
 
-
     <div class="video-box">
 
         <video
             id="video"
-            playsinline
             muted
+            playsinline
+            loop
             preload="auto"
         >
-
-            <source
-                src="video1.mp4"
-                type="video/mp4"
-            >
-
+            <source src="video1.mp4" type="video/mp4">
         </video>
 
     </div>
 
-
-    <div class="track-number">
+    <div class="track-number" id="trackNumber">
         01
     </div>
 
-
-    <div class="track-title">
+    <div class="track-title" id="trackTitle">
         ХОТЕЛ БЫТЬ КАК ВСЕ
     </div>
 
-
     <button
         class="play-button"
-        id="playButton"
-    >
+        id="playButton">
         PLAY
     </button>
 
-
     <audio
         id="audio"
-        preload="auto"
-    >
-
-        <source
-            src="track1.mp3"
-            type="audio/mpeg"
-        >
-
+        preload="auto">
+        <source src="track1.mp3" type="audio/mpeg">
     </audio>
-
 
     <div class="tracks">
 
-        <button class="track-button active">
+        <button class="track-button active" data-track="1">
             01
         </button>
 
-        <button class="track-button">
+        <button class="track-button" data-track="2">
             02
         </button>
 
-        <button class="track-button">
+        <button class="track-button" data-track="3">
             03
         </button>
 
-        <button class="track-button">
+        <button class="track-button" data-track="4">
             04
         </button>
 
-        <button class="track-button">
+        <button class="track-button" data-track="5">
             05
         </button>
 
@@ -240,16 +200,98 @@ const video = document.getElementById("video");
 const audio = document.getElementById("audio");
 const playButton = document.getElementById("playButton");
 
+const trackNumber = document.getElementById("trackNumber");
+const trackTitle = document.getElementById("trackTitle");
+
+const trackButtons = document.querySelectorAll(".track-button");
+
+
+const tracks = {
+
+    1: {
+        title: "ХОТЕЛ БЫТЬ КАК ВСЕ",
+        audio: "track1.mp3",
+        video: "video1.mp4"
+    },
+
+    2: {
+        title: "БЛИЖЕ, ЧЕМ ВЕСЬ МИР",
+        audio: "track2.mp3",
+        video: "video2.mp4"
+    },
+
+    3: {
+        title: "ТАНЕЦ УЛИТКИ",
+        audio: "track3.mp3",
+        video: "video3.mp4"
+    },
+
+    4: {
+        title: "ЧЁРНЫЕ И БЕЛЫЕ ПОЛОСЫ",
+        audio: "track4.mp3",
+        video: "video4.mp4"
+    },
+
+    5: {
+        title: "НАВСЕГДА",
+        audio: "track5.mp3",
+        video: "video5.mp4"
+    }
+
+};
+
+
+let currentTrack = 1;
+let isPlaying = false;
+
+
+function loadTrack(number) {
+
+    const track = tracks[number];
+
+    currentTrack = number;
+
+    audio.pause();
+    video.pause();
+
+    isPlaying = false;
+
+    playButton.textContent = "PLAY";
+
+    audio.src = track.audio;
+    video.src = track.video;
+
+    audio.load();
+    video.load();
+
+    trackNumber.textContent =
+        String(number).padStart(2, "0");
+
+    trackTitle.textContent = track.title;
+
+    trackButtons.forEach(button => {
+
+        button.classList.remove("active");
+
+        if (button.dataset.track == number) {
+            button.classList.add("active");
+        }
+
+    });
+
+}
+
 
 playButton.addEventListener("click", async function() {
 
-    if (audio.paused) {
+    if (!isPlaying) {
 
         try {
 
             await audio.play();
-
             await video.play();
+
+            isPlaying = true;
 
             playButton.textContent = "PAUSE";
 
@@ -270,8 +312,9 @@ playButton.addEventListener("click", async function() {
     else {
 
         audio.pause();
-
         video.pause();
+
+        isPlaying = false;
 
         playButton.textContent = "PLAY";
 
@@ -280,19 +323,45 @@ playButton.addEventListener("click", async function() {
 });
 
 
+trackButtons.forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        const number =
+            Number(this.dataset.track);
+
+        /*
+        Пока у нас реально готовы
+        только 01 и 02.
+        */
+
+        if (number === 1 || number === 2) {
+
+            loadTrack(number);
+
+        }
+
+    });
+
+});
+
+
 audio.addEventListener("ended", function() {
 
     audio.pause();
-
     video.pause();
 
     audio.currentTime = 0;
-
     video.currentTime = 0;
+
+    isPlaying = false;
 
     playButton.textContent = "PLAY";
 
 });
+
+
+loadTrack(1);
 
 </script>
 
