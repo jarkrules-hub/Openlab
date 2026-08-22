@@ -7,11 +7,22 @@
 <title>OPENLAB</title>
 
 <style>
-body {
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
     background: #000;
     color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -20,8 +31,26 @@ body {
 
 .container {
     width: 90%;
-    max-width: 900px;
+    max-width: 850px;
     text-align: center;
+}
+
+/* OPENLAB */
+
+.logo {
+    font-size: 13px;
+    letter-spacing: 8px;
+    opacity: 0.6;
+    margin-bottom: 30px;
+}
+
+/* VIDEO */
+
+.video-box {
+    width: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
 }
 
 video {
@@ -29,94 +58,185 @@ video {
     max-height: 60vh;
     object-fit: contain;
     display: block;
-    margin: auto;
 }
 
-.logo {
-    font-size: 13px;
-    letter-spacing: 8px;
-    opacity: 0.7;
-    margin-bottom: 25px;
-}
+/* TRACK */
 
 .track-number {
     margin-top: 25px;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 5px;
-    opacity: 0.5;
+    opacity: 0.45;
 }
 
 .track-title {
     margin-top: 10px;
-    font-size: 22px;
+    font-size: 21px;
     letter-spacing: 3px;
 }
 
-button {
+/* PLAY */
+
+.play-button {
     margin-top: 25px;
-    padding: 12px 40px;
+    padding: 12px 38px;
+
     background: transparent;
     border: 1px solid #555;
-    color: white;
-    cursor: pointer;
-    font-size: 12px;
+
+    color: #fff;
+
+    font-size: 11px;
     letter-spacing: 4px;
+
+    cursor: pointer;
 }
 
-button:hover {
-    background: white;
-    color: black;
+.play-button:hover {
+    background: #fff;
+    color: #000;
 }
+
+/* TRACK NUMBERS */
 
 .tracks {
-    margin-top: 30px;
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
 }
 
-.track {
-    background: none;
+.track-button {
+    background: transparent;
     border: none;
-    color: #555;
-    margin: 0 8px;
-    padding: 5px;
+
+    color: #444;
+
+    font-size: 11px;
+    letter-spacing: 2px;
+
+    cursor: pointer;
 }
 
-.track.active {
-    color: white;
+.track-button.active {
+    color: #fff;
 }
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .container {
+        width: 94%;
+    }
+
+    video {
+        max-height: 45vh;
+    }
+
+    .track-title {
+        font-size: 17px;
+    }
+
+    .tracks {
+        gap: 12px;
+    }
+}
+
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <div class="logo">OPENLAB</div>
+    <div class="logo">
+        OPENLAB
+    </div>
 
-    <video id="video" playsinline preload="metadata">
-        <source src="./video1.mp4" type="video/mp4">
-    </video>
 
-    <div class="track-number">01</div>
+    <div class="video-box">
+
+        <video
+            id="video"
+            playsinline
+            preload="auto"
+        >
+            <source
+                src="video1.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+    </div>
+
+
+    <div class="track-number">
+        01
+    </div>
+
 
     <div class="track-title">
         ХОТЕЛ БЫТЬ КАК ВСЕ
     </div>
 
-    <button id="playButton">PLAY</button>
 
-    <audio id="audio" preload="metadata">
-        <source src="./track1.mp3" type="audio/mpeg">
+    <button
+        class="play-button"
+        id="playButton"
+    >
+        PLAY
+    </button>
+
+
+    <audio
+        id="audio"
+        preload="auto"
+    >
+        <source
+            src="track1.mp3"
+            type="audio/mpeg"
+        >
     </audio>
 
+
     <div class="tracks">
-        <button class="track active">01</button>
-        <button class="track">02</button>
-        <button class="track">03</button>
-        <button class="track">04</button>
-        <button class="track">05</button>
+
+        <button
+            class="track-button active"
+        >
+            01
+        </button>
+
+        <button
+            class="track-button"
+        >
+            02
+        </button>
+
+        <button
+            class="track-button"
+        >
+            03
+        </button>
+
+        <button
+            class="track-button"
+        >
+            04
+        </button>
+
+        <button
+            class="track-button"
+        >
+            05
+        </button>
+
     </div>
 
 </div>
+
 
 <script>
 
@@ -124,34 +244,55 @@ const video = document.getElementById("video");
 const audio = document.getElementById("audio");
 const playButton = document.getElementById("playButton");
 
-playButton.addEventListener("click", async function () {
+
+playButton.addEventListener("click", async function() {
 
     if (audio.paused) {
 
         try {
+
             await audio.play();
+
             await video.play();
 
             playButton.textContent = "PAUSE";
 
-        } catch (error) {
-            console.log(error);
-            alert("Не удалось запустить аудио. Проверь файл track1.mp3.");
         }
 
-    } else {
+        catch (error) {
+
+            console.log(error);
+
+            alert(
+                "Не удалось запустить видео. " +
+                "Проверь файл video1.mp4."
+            );
+
+        }
+
+    }
+
+    else {
 
         audio.pause();
+
         video.pause();
 
         playButton.textContent = "PLAY";
+
     }
 
 });
 
-audio.addEventListener("ended", function () {
+
+audio.addEventListener("ended", function() {
+
+    audio.pause();
 
     video.pause();
+
+    audio.currentTime = 0;
+
     video.currentTime = 0;
 
     playButton.textContent = "PLAY";
